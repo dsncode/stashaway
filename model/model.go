@@ -30,7 +30,7 @@ type DespositPlan struct {
 	Name                string
 	DepositPlanType     DepositPlanType
 	CustomerID          string
-	PortfolioPlan       []*PortfolioPlan
+	PortfolioPlan       []PortfolioPlan
 	FirstUpdateComplete bool
 }
 
@@ -51,7 +51,7 @@ func CreatePortfolio(name string) (portfolio *Portfolio) {
 	return
 }
 
-func CreateDepositPlan(name string, porfolios []*PortfolioPlan, depositPlanType DepositPlanType) (depositPlan *DespositPlan) {
+func CreateDepositPlan(name string, porfolios []PortfolioPlan, depositPlanType DepositPlanType) (depositPlan *DespositPlan) {
 
 	depositPlan = &DespositPlan{
 		Name:            name,

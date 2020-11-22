@@ -17,23 +17,23 @@ func setup() {
 	retirement := model.CreatePortfolio("Retirement")
 
 	// create deposit plans
-	singleTimePlanPortfolios := []*model.PortfolioPlan{
-		&model.PortfolioPlan{
+	singleTimePlanPortfolios := []model.PortfolioPlan{
+		model.PortfolioPlan{
 			Portfolio:          highRisk,
 			MaxAmountToDeposit: 10000,
 		},
-		&model.PortfolioPlan{
+		model.PortfolioPlan{
 			Portfolio:          retirement,
 			MaxAmountToDeposit: 500,
 		},
 	}
 
-	montlyPlanPortfolio := []*model.PortfolioPlan{
-		&model.PortfolioPlan{
+	montlyPlanPortfolio := []model.PortfolioPlan{
+		model.PortfolioPlan{
 			Portfolio:          highRisk,
 			MaxAmountToDeposit: 0,
 		},
-		&model.PortfolioPlan{
+		model.PortfolioPlan{
 			Portfolio:          retirement,
 			MaxAmountToDeposit: 100,
 		},
