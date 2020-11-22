@@ -7,6 +7,7 @@ func ComputeSavingsDistribution(depositPlans []*model.DespositPlan, deposits []m
 
 	portfolioMap := make(map[string]*model.Portfolio)
 
+	// This portfolio, will contain all extra money that was sent and was not added to any portfolio
 	defaultPortfolio := model.CreatePortfolio("Default")
 	portfolioMap[defaultPortfolio.ID] = defaultPortfolio
 	portfolios = append(portfolios, defaultPortfolio)
