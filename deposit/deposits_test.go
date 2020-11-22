@@ -12,13 +12,6 @@ func TestExampleDesposit(t *testing.T) {
 
 	highRisk := model.CreatePortfolio("High Risk", model.Standard)
 	retirement := model.CreatePortfolio("Retirement", model.Standard)
-	defaultPortfolio := model.CreatePortfolio("Default", model.Default)
-
-	// create default porfolio plan, as backup for extra deposits
-	defaultPortfolioPlan := &model.PortfolioPlan{
-		Portfolio:          defaultPortfolio,
-		MaxAmountToDeposit: model.UnlimitedAmount,
-	}
 
 	// create deposit plans
 	singleTimePlanPortfolios := []*model.PortfolioPlan{
@@ -26,19 +19,25 @@ func TestExampleDesposit(t *testing.T) {
 			Portfolio:          highRisk,
 			MaxAmountToDeposit: 10000,
 		},
-		defaultPortfolioPlan,
+		&model.PortfolioPlan{
+			Portfolio:          retirement,
+			MaxAmountToDeposit: 500,
+		},
 	}
 
 	montlyPlanPortfolio := []*model.PortfolioPlan{
 		&model.PortfolioPlan{
+			Portfolio:          highRisk,
+			MaxAmountToDeposit: 0,
+		},
+		&model.PortfolioPlan{
 			Portfolio:          retirement,
 			MaxAmountToDeposit: 100,
 		},
-		defaultPortfolioPlan,
 	}
 
-	singleTime := model.CreateDepositPlan("single time", singleTimePlanPortfolios, 10000)
-	montly := model.CreateDepositPlan("single time", montlyPlanPortfolio, 10000)
+	singleTime := model.CreateDepositPlan("Single Time", singleTimePlanPortfolios, model.SingleTime)
+	montly := model.CreateDepositPlan("Montly", montlyPlanPortfolio, model.Montly)
 
 	depositPlans := []*model.DespositPlan{singleTime, montly}
 
@@ -70,7 +69,7 @@ func TestExampleDesposit(t *testing.T) {
 			}
 			break
 		case "Retirement":
-			if portfolio.Total != 100 {
+			if portfolio.Total != 600 {
 				t.Fatalf("%s got wrong amount. should be 100, but got %d", portfolio.Name, portfolio.Total)
 			}
 			break
