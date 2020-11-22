@@ -38,13 +38,14 @@ const (
 // DespositPlan for a customer
 type DespositPlan struct {
 	DepositPlanID   string
+	Name            string
 	DepositPlanType DepositPlanType
 	CustomerID      string
 	Portfolio       []*Portfolio
 }
 
 // CreatePortfolio builds a portfolio for a customer
-func CreatePortfolio(name string, maxAmount MaxAmountToDeposit, depositPlanType DepositPlanType) (portfolio *Portfolio) {
+func CreatePortfolio(name string, maxAmount MaxAmountToDeposit) (portfolio *Portfolio) {
 
 	portfolio = &Portfolio{
 		PortfolioID: uuid.New().String(),
@@ -53,5 +54,14 @@ func CreatePortfolio(name string, maxAmount MaxAmountToDeposit, depositPlanType 
 		MaxAmount:   maxAmount,
 	}
 	return
+}
 
+func CreateDepositPlan(name string, porfolios []*Portfolio, maxAmount DepositPlanType) (depositPlan *DespositPlan) {
+
+	depositPlan = &DespositPlan{
+		DepositPlanID: uuid.New().String(),
+		Name:          name,
+		Portfolio:     porfolios,
+	}
+	return
 }
