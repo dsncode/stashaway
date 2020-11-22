@@ -1,15 +1,18 @@
 package deposit
 
 import (
+	"log"
 	"testing"
 
 	"github.com/dsncode/stash/model"
 )
 
-// Example test from Document (happy case)
-func TestExampleDesposit(t *testing.T) {
-	// create portfolios
+var (
+	depositPlans []*model.DespositPlan
+)
 
+func setup() {
+	// create portfolios
 	highRisk := model.CreatePortfolio("High Risk", model.Standard)
 	retirement := model.CreatePortfolio("Retirement", model.Standard)
 
@@ -39,8 +42,12 @@ func TestExampleDesposit(t *testing.T) {
 	singleTime := model.CreateDepositPlan("Single Time", singleTimePlanPortfolios, model.SingleTime)
 	montly := model.CreateDepositPlan("Montly", montlyPlanPortfolio, model.Montly)
 
-	depositPlans := []*model.DespositPlan{singleTime, montly}
+	depositPlans = []*model.DespositPlan{singleTime, montly}
+}
 
+// Example test from Document (happy case)
+func TestExampleDesposit(t *testing.T) {
+	setup()
 	janDeposit := model.Deposit{
 		Amount: 10500,
 		Month:  1,
@@ -56,28 +63,47 @@ func TestExampleDesposit(t *testing.T) {
 	deposits := []model.Deposit{janDeposit, febDeposit}
 
 	portfolios := ComputeSavingsDistribution(depositPlans, deposits)
+	expectation := make(map[string]int16)
+	expectation["High Risk"] = 10000
+	expectation["Retirement"] = 600
+	expectation["Default"] = 0
 
-	if len(portfolios) != 3 {
-		t.Fatal("there should be 3 porfolios")
+	validatePortfolioExpectations(t, portfolios, expectation)
+}
+
+// Example where customer send 100 more than he should. in this case, extra money goes to default account (no risk)
+func TestExampleDespositWhenUserSendMoreMoneyThanHeShould(t *testing.T) {
+	setup()
+	janDeposit := model.Deposit{
+		Amount: 10500,
+		Month:  1,
+		Year:   2020,
 	}
 
+	febDeposit := model.Deposit{
+		Amount: 200, // user in this case, send 100 more than he should
+		Month:  2,
+		Year:   2020,
+	}
+
+	deposits := []model.Deposit{janDeposit, febDeposit}
+
+	portfolios := ComputeSavingsDistribution(depositPlans, deposits)
+	expectations := make(map[string]int16)
+	expectations["High Risk"] = 10000
+	expectations["Retirement"] = 600
+	expectations["Default"] = 100
+	validatePortfolioExpectations(t, portfolios, expectations)
+}
+
+func validatePortfolioExpectations(t *testing.T, portfolios []*model.Portfolio, expectations map[string]int16) {
+	log.Println("validating...")
 	for _, portfolio := range portfolios {
-		switch portfolio.Name {
-		case "High Risk":
-			if portfolio.Total != 10000 {
-				t.Fatalf("%s got wrong amount. should be 1000, but got %d", portfolio.Name, portfolio.Total)
+
+		if expectedValue, exists := expectations[portfolio.Name]; exists {
+			if portfolio.Total != expectedValue {
+				t.Fatalf("%s got wrong amount. should be %d, but got %d", portfolio.Name, expectedValue, portfolio.Total)
 			}
-			break
-		case "Retirement":
-			if portfolio.Total != 600 {
-				t.Fatalf("%s got wrong amount. should be 100, but got %d", portfolio.Name, portfolio.Total)
-			}
-			break
-		case "Default":
-			if portfolio.Total != 0 {
-				t.Fatalf("%s got wrong amount. should be 0, but got %d", portfolio.Name, portfolio.Total)
-			}
-			break
 		}
 	}
 
