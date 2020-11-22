@@ -7,7 +7,7 @@ func ComputeSavingsDistribution(depositPlans []*model.DespositPlan, deposits []m
 
 	portfolioMap := make(map[string]*model.Portfolio)
 
-	defaultPortfolio := model.CreatePortfolio("Default", model.Default)
+	defaultPortfolio := model.CreatePortfolio("Default")
 	portfolioMap[defaultPortfolio.ID] = defaultPortfolio
 	portfolios = append(portfolios, defaultPortfolio)
 

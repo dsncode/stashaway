@@ -13,8 +13,8 @@ var (
 
 func setup() {
 	// create portfolios
-	highRisk := model.CreatePortfolio("High Risk", model.Standard)
-	retirement := model.CreatePortfolio("Retirement", model.Standard)
+	highRisk := model.CreatePortfolio("High Risk")
+	retirement := model.CreatePortfolio("Retirement")
 
 	// create deposit plans
 	singleTimePlanPortfolios := []*model.PortfolioPlan{

@@ -9,23 +9,15 @@ type Deposit struct {
 }
 
 type Portfolio struct {
-	ID            string
-	Name          string
-	Total         int16
-	PortfolioType PortfolioType
+	ID    string
+	Name  string
+	Total int16
 }
-
-// PortfolioType indicate if is a standard of default porfolio
-type PortfolioType int
 
 // DepositPlanType single time or montly
 type DepositPlanType int
 
 const (
-	// Default all remaining money goes here
-	Default PortfolioType = 0
-	// Standard portolio type
-	Standard PortfolioType = 1
 
 	// SingleTime once it fills up. stop depositing
 	SingleTime DepositPlanType = 1
@@ -49,13 +41,12 @@ type PortfolioPlan struct {
 }
 
 // CreatePortfolio builds a portfolio for a customer
-func CreatePortfolio(name string, portfolioType PortfolioType) (portfolio *Portfolio) {
+func CreatePortfolio(name string) (portfolio *Portfolio) {
 
 	portfolio = &Portfolio{
-		ID:            uuid.New().String(),
-		Name:          name,
-		Total:         0,
-		PortfolioType: portfolioType,
+		ID:    uuid.New().String(),
+		Name:  name,
+		Total: 0,
 	}
 	return
 }
