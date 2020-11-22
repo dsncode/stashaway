@@ -2,66 +2,76 @@ package model
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Deposit struct {
-	TransacctionID string
-	Amount         int16
+	Amount int16
+	Month  int
+	Year   int
 }
 
 type Portfolio struct {
-	PortfolioID string
-	Name        string
-	Total       int16
-	MaxAmount   MaxAmountToDeposit
-	LastDeposit time.Time
+	Name          string
+	Total         int16
+	PortfolioType PortfolioType
+	LastDeposit   time.Time
 }
 
-// DepositPlanType default, single time or montly
+// PortfolioType indicate if is a standard of default porfolio
+type PortfolioType int
+
+// DepositPlanType single time or montly
 type DepositPlanType int
-type MaxAmountToDeposit int16
+
+// MaxAmountToDepositPorfolio for a specific plan
+type MaxAmountToDepositPorfolio int16
 
 const (
 	// Default all remaining money goes here
-	Default DepositPlanType = 0
+	Default PortfolioType = 0
+	// Standard portolio type
+	Standard PortfolioType = 1
+
 	// SingleTime once it fills up. stop depositing
 	SingleTime DepositPlanType = 1
 	// Montly it captures income per month
 	Montly DepositPlanType = 2
 
 	// UnlimitedAmount indicates that, there is no max cap for this portolio
-	UnlimitedAmount MaxAmountToDeposit = -1
+	UnlimitedAmount MaxAmountToDepositPorfolio = -1
 )
 
 // DespositPlan for a customer
 type DespositPlan struct {
-	DepositPlanID   string
 	Name            string
 	DepositPlanType DepositPlanType
 	CustomerID      string
-	Portfolio       []*Portfolio
+	PortfolioPlan   []*PortfolioPlan
+}
+
+// PortfolioPlan indicates a porfolio and its max funding limits
+type PortfolioPlan struct {
+	Portfolio          *Portfolio
+	MaxAmountToDeposit MaxAmountToDepositPorfolio
 }
 
 // CreatePortfolio builds a portfolio for a customer
-func CreatePortfolio(name string, maxAmount MaxAmountToDeposit) (portfolio *Portfolio) {
+func CreatePortfolio(name string, portfolioType PortfolioType) (portfolio *Portfolio) {
 
 	portfolio = &Portfolio{
-		PortfolioID: uuid.New().String(),
-		Name:        name,
-		Total:       0,
-		MaxAmount:   maxAmount,
+		Name:          name,
+		Total:         0,
+		PortfolioType: portfolioType,
 	}
 	return
 }
 
-func CreateDepositPlan(name string, porfolios []*Portfolio, maxAmount DepositPlanType) (depositPlan *DespositPlan) {
+func CreateDepositPlan(name string, porfolios []*PortfolioPlan, depositPlanType DepositPlanType) (depositPlan *DespositPlan) {
 
 	depositPlan = &DespositPlan{
-		DepositPlanID: uuid.New().String(),
-		Name:          name,
-		Portfolio:     porfolios,
+		Name:            name,
+		PortfolioPlan:   porfolios,
+		DepositPlanType: depositPlanType,
 	}
 	return
 }
