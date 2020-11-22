@@ -64,8 +64,8 @@ func TestExampleDesposit(t *testing.T) {
 
 	portfolios := ComputeSavingsDistribution(depositPlans, deposits)
 	expectation := make(map[string]int16)
-	expectation["High Risk"] = 10000
-	expectation["Retirement"] = 600
+	expectation["High Risk"] = 10000 // 10,000 from 10,500 goes to this account
+	expectation["Retirement"] = 600  // 500 from first deposit goes here + 100 from the second deposit
 	expectation["Default"] = 0
 
 	validatePortfolioExpectations(t, portfolios, expectation)
@@ -90,9 +90,34 @@ func TestExampleDespositWhenUserSendMoreMoneyThanHeShould(t *testing.T) {
 
 	portfolios := ComputeSavingsDistribution(depositPlans, deposits)
 	expectations := make(map[string]int16)
-	expectations["High Risk"] = 10000
-	expectations["Retirement"] = 600
-	expectations["Default"] = 100
+	expectations["High Risk"] = 10000 // 10,000 goes here from first deposit
+	expectations["Retirement"] = 600  // 500 from first deposit + 100 from second deposit (touch limit per month)
+	expectations["Default"] = 100     // remaining money, is allocated into default account (no risk)
+	validatePortfolioExpectations(t, portfolios, expectations)
+}
+
+// In this case, client send less money than he should
+func TestExampleDespositWhenUserSendLessMoneyThanHeShould(t *testing.T) {
+	setup()
+	janDeposit := model.Deposit{
+		Amount: 10000,
+		Month:  1,
+		Year:   2020,
+	}
+
+	febDeposit := model.Deposit{
+		Amount: 100,
+		Month:  2,
+		Year:   2020,
+	}
+
+	deposits := []model.Deposit{janDeposit, febDeposit}
+
+	portfolios := ComputeSavingsDistribution(depositPlans, deposits)
+	expectations := make(map[string]int16)
+	expectations["High Risk"] = 10000 // all first deposit goes straight to high risk account. in this case, there is no money to assign to second portfolio (retirement)
+	expectations["Retirement"] = 100  // second deposit goes here
+	expectations["Default"] = 0       // no extra money
 	validatePortfolioExpectations(t, portfolios, expectations)
 }
 
