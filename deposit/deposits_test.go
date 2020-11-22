@@ -19,23 +19,23 @@ func setup() {
 	// create deposit plans
 	singleTimePlanPortfolios := []model.PortfolioPlan{
 		model.PortfolioPlan{
-			Portfolio:          highRisk,
-			MaxAmountToDeposit: 10000,
+			Portfolio:                         highRisk,
+			MaxAmountToDepositPerTransacction: 10000,
 		},
 		model.PortfolioPlan{
-			Portfolio:          retirement,
-			MaxAmountToDeposit: 500,
+			Portfolio:                         retirement,
+			MaxAmountToDepositPerTransacction: 500,
 		},
 	}
 
 	montlyPlanPortfolio := []model.PortfolioPlan{
 		model.PortfolioPlan{
-			Portfolio:          highRisk,
-			MaxAmountToDeposit: 0,
+			Portfolio:                         highRisk,
+			MaxAmountToDepositPerTransacction: 0,
 		},
 		model.PortfolioPlan{
-			Portfolio:          retirement,
-			MaxAmountToDeposit: 100,
+			Portfolio:                         retirement,
+			MaxAmountToDepositPerTransacction: 100,
 		},
 	}
 

@@ -25,17 +25,17 @@ func ComputeSavingsDistribution(depositPlans []*model.DespositPlan, deposits []m
 
 			for _, plan := range depositPlan.PortfolioPlan {
 
-				// we should not deposit here
-				if plan.MaxAmountToDeposit == 0 {
+				// Given this plan, we should not deposit on this portfolio
+				if plan.MaxAmountToDepositPerTransacction == 0 {
 					continue
 				}
 
-				if totalDeposit <= plan.MaxAmountToDeposit {
+				if totalDeposit <= plan.MaxAmountToDepositPerTransacction {
 					plan.Portfolio.Total = plan.Portfolio.Total + totalDeposit
 					totalDeposit = 0
 				} else {
-					plan.Portfolio.Total = plan.Portfolio.Total + plan.MaxAmountToDeposit
-					totalDeposit = totalDeposit - plan.MaxAmountToDeposit
+					plan.Portfolio.Total = plan.Portfolio.Total + plan.MaxAmountToDepositPerTransacction
+					totalDeposit = totalDeposit - plan.MaxAmountToDepositPerTransacction
 				}
 
 				// aggregate portfolio to response

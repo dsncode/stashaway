@@ -36,8 +36,8 @@ type DespositPlan struct {
 
 // PortfolioPlan indicates a porfolio and its max funding limits
 type PortfolioPlan struct {
-	Portfolio          *Portfolio
-	MaxAmountToDeposit int16
+	Portfolio                         *Portfolio
+	MaxAmountToDepositPerTransacction int16
 }
 
 // CreatePortfolio builds a portfolio for a customer
